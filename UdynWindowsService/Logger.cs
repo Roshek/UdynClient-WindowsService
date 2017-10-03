@@ -23,6 +23,14 @@ namespace UdynWindowsService
         public static LogLevel LogLevel = LogLevel.INFO;
         public static string LogPath = "noPath";
 
+        public static void Separator()
+        {
+            using (StreamWriter w = File.AppendText(LogPath))
+            {
+                w.WriteLine(" ####################################### \r\n\r\n\r\n\r\n");
+            }
+        }
+
         public static void Log(string logMessage, LogLevel level = LogLevel.INFO)
         {
             if (LogLevel < level)
