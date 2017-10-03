@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            // 
+            // UdynWindowsService
+            // 
             this.ServiceName = "UdynWindowsService";
+
         }
 
         #endregion
