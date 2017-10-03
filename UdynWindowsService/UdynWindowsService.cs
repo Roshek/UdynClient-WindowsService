@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace UdynWindowsService
 {
-    public partial class Service1 : ServiceBase
+    public partial class UdynWindowsService : ServiceBase
     {
-        public Service1()
+        public UdynWindowsService()
         {
             InitializeComponent();
         }
