@@ -7,7 +7,7 @@
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product 
-    Id="{EB893F94-A6F1-443B-98D5-991AC58CBF19}"
+    Id="{0A0E29BB-CEF1-4A10-A255-0DE4BFEAF2A6}"
     Name="$(var.Name)"
     Manufacturer="$(var.Manufacturer)"
     UpgradeCode="$(var.UpgradeCode)" 
@@ -49,9 +49,21 @@
         <RemoveFile Id="config" Name="$(var.ConfigFile)" On="uninstall" />
       </Component>
     </DirectoryRef>
-    <Feature Id="Complete" Title="The complete Udyn Windows Service package." Level="1">
+    <Feature Id="Complete" Title="The complete Udyn Windows Service package." Level="1"
+             Display="expand" ConfigurableDirectory="INSTALLFOLDER" Absent="disallow"
+             InstallDefault="local" AllowAdvertise="no">
       <ComponentRef Id="$(var.UdynWindowsService.TargetFileName)" />
       <ComponentRef Id="$(var.ConfigFile)" />
     </Feature>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <UI Id="CustomWixUI_InstallDir">
+      <UIRef Id="WixUI_InstallDir"/>
+
+      <DialogRef Id="CustomConfigDlg"/>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="CustomConfigDlg">NOT Installed</Publish>
+
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="CustomConfigDlg">1</Publish>
+    </UI>
   </Product>
 </Wix>

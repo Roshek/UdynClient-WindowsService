@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='Windows-1252'?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <UI>
+      <Dialog Id="CustomConfigDlg" Width="370" Height="270" Title="[ProdictName] Setup" NoMinimize="yes">
+        <Control Id="PrefixLabel" Type="Text" X="45" Y="53" Width="100"
+                 Height="15" TabSkip="no" Text="&amp;Prefix:" />
+        <Control Id="PrefixEdit" Type="Edit" X="45" Y="65" Width="220"
+                 Height="18" Property="PREFIX" Text="yourPrefix"/>
+        
+        <Control Id="TokenLabel" Type="Text" X="45" Y="90" Width="100"
+                 Height="15" TabSkip="no" Text="&amp;Token:" />
+        <Control Id="TokenEdit" Type="Edit" X="45" Y="102" Width="220"
+                 Height="18" Property="TOKEN" Text="yourToken"/>
+        
+        <Control Id="IntervalLabel" Type="Text" X="45" Y="127" Width="100"
+                 Height="15" TabSkip="no" Text="&amp;Interval (ms):" />
+        <Control Id="IntervalEdit" Type="Edit" X="45" Y="139" Width="220"
+                 Height="18" Property="INTERVAL" Integer="yes" Text="300000" />
+        
+        <Control Id="LogLevelLabel" Type="Text" X="45" Y="164" Width="220"
+                 Height="15" TabSkip="no" Text="&amp;Log Level (0 - MUTE, 4 - INFO, 5 - DEBUG):" />
+        <Control Id="LogLevelEdit" Type="Edit" X="45" Y="176" Width="220"
+                 Height="18" Property="LOGLEVEL" Integer="yes" Text="4" />
+
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
+        </Control>
+        
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="InstallDirDlg">1</Publish>
+        </Control>
+        
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Please enter your domain information and application settings</Text>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Settings</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      </Dialog>
+    </UI>
+	</Fragment>
+</Wix>
