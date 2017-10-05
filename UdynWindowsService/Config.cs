@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UdynWindowsService
 {
-    class Config
+    public class Config
     {
         public string Prefix { get; set; }
         public string Token { get; set; }

@@ -4,6 +4,7 @@
 <?define Version = "0.5.1" ?>
 <?define UpgradeCode = "{0E8BD9FE-966F-434B-98C8-6F67D26CC312}" ?>
 <?define ConfigFile = "udynconfig.json"?>
+<?define CustomActionDll = "UdynWixInstaller_CreateConfigCA.CA.dll"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product 
@@ -21,7 +22,7 @@
       Compressed="yes"/>
     <Media Id="1" Cabinet="UdynWindowsService.cab" EmbedCab="yes" />
     <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
-
+  
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="ROOTDIRECTORY" Name="$(var.Manufacturer)">
@@ -44,18 +45,14 @@
           ErrorControl="normal" />
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="UdynWindowsService" Wait="yes" />
       </Component>
-      <Component Id ="$(var.ConfigFile)" Guid="{BEA1D5AB-3F36-47B6-9172-82E7B5D5C141}">
-        <File Id="$(var.ConfigFile)" Source="$(var.UdynWindowsService.TargetDir)\$(var.ConfigFile)" KeyPath="yes" />
-        <RemoveFile Id="config" Name="$(var.ConfigFile)" On="uninstall" />
-      </Component>
     </DirectoryRef>
     <Feature Id="Complete" Title="The complete Udyn Windows Service package." Level="1"
              Display="expand" ConfigurableDirectory="INSTALLFOLDER" Absent="disallow"
              InstallDefault="local" AllowAdvertise="no">
       <ComponentRef Id="$(var.UdynWindowsService.TargetFileName)" />
-      <ComponentRef Id="$(var.ConfigFile)" />
     </Feature>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <Property Id="CONFIGFILE" Value="[INSTALLFOLDER]$(var.ConfigFile)" />
     
     <UI Id="CustomWixUI_InstallDir">
       <UIRef Id="WixUI_InstallDir"/>
@@ -65,5 +62,18 @@
 
       <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="CustomConfigDlg">1</Publish>
     </UI>
+
+    <Binary Id="CreateConfigCA.dll"
+        src="$(var.UdynWixInstaller_CreateConfigCA.TargetDir)\$(var.CustomActionDll)" />
+
+    <CustomAction Id="CreateConfigCA"
+                  Return="check"
+                  Execute="immediate"
+                  BinaryKey="CreateConfigCA.dll"
+                  DllEntry="CreateConfigFile" />
+
+    <InstallExecuteSequence>
+      <Custom Action="CreateConfigCA" Before="InstallFinalize" />
+    </InstallExecuteSequence>
   </Product>
 </Wix>
