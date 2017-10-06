@@ -18,20 +18,21 @@ namespace UdynWixInstaller_CreateConfigCA
             try
             {
                 session.Log("Begin CreateConfigFile custom action");
-                session.Log("Configfile: {0} - Prefix: {1} - Token: {2} - Interval: {3} - Loglevel: {4}",
-                    session["CONFIGFILE"], session["PREFIX"], session["TOKEN"], session["INTERVAL"], session["LOGLEVEL"]);
+                string customActionData = session["CustomActionData"];
 
+                string[] dataArray = customActionData.Split(';');
 
-                string configFile = session["CONFIGFILE"];
+                string configFile = dataArray[0];
                 Config config = new Config
                 {
-                    Prefix = session["PREFIX"],
-                    Token = session["TOKEN"],
-                    Interval = Int32.Parse(session["INTERVAL"]),
-                    LogLevel = (LogLevel)Int32.Parse(session["LOGLEVEL"])
+                    Prefix = dataArray[1],
+                    Token = dataArray[2],
+                    Interval = Int32.Parse(dataArray[3]),
+                    LogLevel = (LogLevel)Int32.Parse(dataArray[4])
                 };
-                File.WriteAllText(configFile, JsonConvert.SerializeObject(config));
-
+                string json = JsonConvert.SerializeObject(config);
+                File.WriteAllText(configFile, json);
+                
                 session.Log("End CreateConfigFile custom action");
             }
             catch (Exception ex)
