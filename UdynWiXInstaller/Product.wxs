@@ -2,13 +2,13 @@
 <?define Name = "Udyn Windows Service" ?>
 <?define Manufacturer = "Udyn" ?>
 <?define Version = "0.6.0" ?>
-<?define UpgradeCode = "{0E8BD9FE-966F-434B-98C8-6F67D26CC312}" ?>
+<?define UpgradeCode = "{4FADD2A4-66F2-44BE-9FAD-251FDC4A1767}" ?>
 <?define ConfigFile = "udynconfig.json"?>
 <?define CustomActionDll = "UdynWixInstaller_CreateConfigCA.CA.dll"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product 
-    Id="{8414F339-0AA7-4F13-A04F-53EA5EB48372}"
+    Id="{1C925626-CF94-4DB1-BFD9-9971BC60864C}"
     Name="$(var.Name)"
     Manufacturer="$(var.Manufacturer)"
     UpgradeCode="$(var.UpgradeCode)" 
@@ -33,7 +33,7 @@
 
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="$(var.UdynWindowsService.TargetFileName)"
-                 Guid="{68000719-47C7-450D-92A7-F8E726317597}">
+                 Guid="{458B3216-2A78-4F7C-A494-7C8CC578CC16}">
         <File Id="$(var.UdynWindowsService.TargetFileName)"
               Source="$(var.UdynWindowsService.TargetPath)" KeyPath="yes" />
         
