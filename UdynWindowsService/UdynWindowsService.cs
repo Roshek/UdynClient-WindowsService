@@ -29,7 +29,7 @@ namespace UdynWindowsService
             InitializeComponent();
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Clear();
-            httpClient.BaseAddress = new Uri("https://ddns.aszabados.eu/");
+            httpClient.BaseAddress = new Uri("https://udyn.eu/");
             Logger.LogLevel = LogLevel.DEBUG;
         }
 

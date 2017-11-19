@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define Name = "Udyn Windows Service" ?>
 <?define Manufacturer = "Udyn" ?>
-<?define Version = "0.5.1" ?>
-<?define UpgradeCode = "{0E8BD9FE-966F-434B-98C8-6F67D26CC312}" ?>
+<?define Version = "0.6.0" ?>
+<?define UpgradeCode = "{4FADD2A4-66F2-44BE-9FAD-251FDC4A1767}" ?>
 <?define ConfigFile = "udynconfig.json"?>
+<?define CustomActionDll = "UdynWixInstaller_CreateConfigCA.CA.dll"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product 
-    Id="{EB893F94-A6F1-443B-98D5-991AC58CBF19}"
+    Id="{1C925626-CF94-4DB1-BFD9-9971BC60864C}"
     Name="$(var.Name)"
     Manufacturer="$(var.Manufacturer)"
     UpgradeCode="$(var.UpgradeCode)" 
@@ -16,12 +17,12 @@
     <Package
       Id="*"
       Keywords="Installer"
-      Description="Udyn Windows Service 0.5.0 Installer"
+      Description="Udyn Windows Service 0.6.0 Installer"
       InstallerVersion="300"
       Compressed="yes"/>
     <Media Id="1" Cabinet="UdynWindowsService.cab" EmbedCab="yes" />
     <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
-
+  
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="ROOTDIRECTORY" Name="$(var.Manufacturer)">
@@ -31,10 +32,13 @@
     </Directory>
 
     <DirectoryRef Id="INSTALLFOLDER">
-      <Component Id="$(var.UdynWindowsService.TargetFileName)" Guid="{F3CDE8E9-CFF3-4B69-8899-F2B542955603}">
-        <File Id="$(var.UdynWindowsService.TargetFileName)" Source="$(var.UdynWindowsService.TargetPath)" KeyPath="yes" />
-        <RemoveFile Id="exe" Name="$(var.UdynWindowsService.TargetFileName)" On="both" />
-        <RemoveFile Id="ALLFILES" Name="*" On="uninstall" />
+      <Component Id="$(var.UdynWindowsService.TargetFileName)"
+                 Guid="{458B3216-2A78-4F7C-A494-7C8CC578CC16}">
+        <File Id="$(var.UdynWindowsService.TargetFileName)"
+              Source="$(var.UdynWindowsService.TargetPath)" KeyPath="yes" />
+        
+        <RemoveFile Id="ALLFILES" Name="*.*" On="uninstall" />
+        
         <ServiceInstall Id="ServiceInstaller"
           Type="ownProcess"
           Name="UdynWindowsService"
@@ -44,14 +48,39 @@
           ErrorControl="normal" />
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="UdynWindowsService" Wait="yes" />
       </Component>
-      <Component Id ="$(var.ConfigFile)" Guid="{BEA1D5AB-3F36-47B6-9172-82E7B5D5C141}">
-        <File Id="$(var.ConfigFile)" Source="$(var.UdynWindowsService.TargetDir)\$(var.ConfigFile)" KeyPath="yes" />
-        <RemoveFile Id="config" Name="$(var.ConfigFile)" On="uninstall" />
-      </Component>
     </DirectoryRef>
-    <Feature Id="Complete" Title="The complete Udyn Windows Service package." Level="1">
+    <Feature Id="Complete" Title="The complete Udyn Windows Service package." 
+             Level="1">
       <ComponentRef Id="$(var.UdynWindowsService.TargetFileName)" />
-      <ComponentRef Id="$(var.ConfigFile)" />
     </Feature>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <UI Id="CustomWixUI_InstallDir">
+      <UIRef Id="WixUI_InstallDir"/>
+
+      <DialogRef Id="CustomConfigDlg"/>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog"
+               Value="CustomConfigDlg">NOT Installed</Publish>
+
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog"
+               Value="CustomConfigDlg">1</Publish>
+    </UI>
+
+    <CustomAction Id="SetConfigData" Property="CreateConfigCA"
+      Value="[INSTALLFOLDER]$(var.ConfigFile);[PREFIX];[TOKEN];[INTERVAL];[LOGLEVEL]"  />
+    
+    <Binary Id="CreateConfigCA.dll"
+        SourceFile="$(var.UdynWixInstaller_CreateConfigCA.TargetDir)\$(var.CustomActionDll)" />
+
+    <CustomAction Id="CreateConfigCA"
+                  Return="check"
+                  BinaryKey="CreateConfigCA.dll"
+                  DllEntry="CreateConfigFile"
+                  Impersonate="no" Execute="deferred"/>
+    
+    <InstallExecuteSequence>
+      <Custom Action="SetConfigData" Before="CreateConfigCA" >NOT Installed </Custom>
+      <Custom Action="CreateConfigCA" After="InstallFiles">NOT Installed</Custom>
+    </InstallExecuteSequence>
   </Product>
 </Wix>
